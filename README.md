@@ -1,7 +1,8 @@
-简单易用的多平台文件同步软件，惊人的传输速度是不同于其他产品的最大优势， 微力同步 的智能 P2P 技术加速同步，会将文件分割成若干份仅 KB 的数据同步，而文件都会进行 AES 加密处理。
-官网：http://verysync.com/
-论坛：http://forum.verysync.com/forum.php
-Telegram: https://t.me/verysync
+> 简单易用的多平台文件同步软件，惊人的传输速度是不同于其他产品的最大优势， 微力同步 的智能 P2P 技术加速同步，会将文件分割成若干份仅 KB 的数据同步，而文件都会进行 AES 加密处理。
+
+- 官网：http://verysync.com/
+- 论坛：http://forum.verysync.com/forum.php
+- Telegram: https://t.me/verysync
 ---
 
 ## 简单使用

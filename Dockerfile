@@ -1,4 +1,4 @@
-FROM alpine
+FROM amd64/alpine
 LABEL maintainer="www.jonnyan404.top:8088"
 ENV TZ=Asia/Shanghai
 WORKDIR /root

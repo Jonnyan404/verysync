@@ -1,6 +1,7 @@
 FROM amd64/alpine
 LABEL maintainer="www.jonnyan404.top:8088"
-ENV TZ=Asia/Shanghai
+ENV TZ=Asia/Shanghai \
+    port=8886
 WORKDIR /root
 COPY files/verysync-linux-amd64-*.tar.gz /tmp
 
@@ -11,6 +12,6 @@ RUN apk add --no-cache tzdata bash \
     && rm -rf /tmp
 
 HEALTHCHECK --interval=1m --timeout=10s \
-  CMD nc -z 127.0.0.1 8886  || exit 1
-ENTRYPOINT ["/usr/bin/verysync","-no-browser","-home","/data","-gui-address"]
-CMD [":8886"]
+  CMD nc -z 127.0.0.1 ${port}  || exit 1
+ENTRYPOINT ["/usr/bin/verysync","-no-browser","-home","/data","-gui-address",":${port}"]
+# CMD [":8886"]

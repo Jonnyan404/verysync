@@ -10,5 +10,7 @@ RUN apk add --no-cache tzdata bash \
     && mv /tmp/verysync-linux-amd64-*/verysync /usr/bin/ \
     && rm -rf /tmp
 
+HEALTHCHECK --interval=1m --timeout=10s \
+  CMD nc -z 127.0.0.1 8886  || exit 1
 ENTRYPOINT ["/usr/bin/verysync","-no-browser","-home","/data","-gui-address"]
 CMD [":8886"]

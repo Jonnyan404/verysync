@@ -13,5 +13,6 @@ RUN apk add --no-cache tzdata bash \
 
 HEALTHCHECK --interval=1m --timeout=10s \
   CMD nc -z 127.0.0.1 ${PORT}  || exit 1
-ENTRYPOINT ["/usr/bin/verysync","-no-browser","-home","/data","-gui-address",":${PORT}"]
+  
+ENTRYPOINT ["sh","-c","/usr/bin/verysync","-no-browser","-home","/data","-gui-address",":${PORT}"]
 # CMD [":8886"]

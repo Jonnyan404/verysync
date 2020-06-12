@@ -28,10 +28,10 @@
 - /path/you/dir  替换为你自己的目录(可执行创建命令 mkdir -p /path/you/dir)
 - 在web界面指定下载目录为 `/data` 即可下载数据到宿主机的 `/path/you/dir` 目录.
 
-**配置更多启动参数**
-- 跟在docker启动参数最后即可.
+~~**配置更多启动参数**~~
+~~- 跟在docker启动参数最后即可.~~
 
-```
+~~```
 -allow-newer-config
     	Allow loading newer than current config version (default true)
   -audit
@@ -96,4 +96,4 @@
     	Show version
   -watch-files int
     	Set the maximum number of file watches (default 200000)
-```
+```~~

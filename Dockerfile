@@ -5,7 +5,7 @@ WORKDIR /root
 COPY files/verysync-linux-amd64-*.tar.gz /tmp
 
 RUN apk add --no-cache tzdata bash \
-    && tar -xvf /tmp/verysync-linux-amd64-latest.tar.gz -C /tmp \
+    && tar -xvf /tmp/verysync-linux-amd64-*.tar.gz -C /tmp \
     && chmod +x /tmp/verysync-linux-amd64-*/verysync \
     && mv /tmp/verysync-linux-amd64-*/verysync /usr/bin/ \
     && rm -rf /tmp

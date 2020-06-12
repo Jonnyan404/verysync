@@ -14,7 +14,7 @@
 ## 进阶使用
 **自定义端口**
 
-`docker run --name verysync  -d -p 3000:3000 -p 22037:22037/udp -p 22027:22027/udp -p xxx:xxx -p yyy:yyy jonnyan404/verysync :yyy`
+`docker run --name verysync  -d -p 3000:3000 -p 22037:22037/udp -p 22027:22027/udp -p xxx:xxx -e PORT=yyy -p yyy:yyy jonnyan404/verysync`
 
 - 3000 为默认公共中继端口
 - 22027/22037 为内网udp发现端口
@@ -23,7 +23,7 @@
 
 **挂载配置与数据目录**
 
-`docker run --name verysync  -d -v /path/you/dir:/data -p 3000:3000 -p 22037:22037/udp -p 22027:22027/udp -p xxx:xxx -p yyy:yyy jonnyan404/verysync :yyy`
+`docker run --name verysync  -d -v /path/you/dir:/data -p 3000:3000 -p 22037:22037/udp -p 22027:22027/udp -p xxx:xxx -e PORT=yyy -p yyy:yyy jonnyan404/verysync`
 
 - /path/you/dir  替换为你自己的目录(可执行创建命令 mkdir -p /path/you/dir)
 - 在web界面指定下载目录为 `/data` 即可下载数据到宿主机的 `/path/you/dir` 目录.

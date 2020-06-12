@@ -2,7 +2,7 @@ FROM arm64v8/alpine:3.8
 COPY qemu-aarch64-static /usr/bin/
 LABEL maintainer="www.jonnyan404.top:8088"
 ENV TZ=Asia/Shanghai \
-    port=8886
+    PORT=8886
 WORKDIR /root
 COPY files/verysync-linux-arm64-*.tar.gz /tmp
 
@@ -13,7 +13,7 @@ RUN apk add --no-cache tzdata bash \
     && rm -rf /tmp
 
 HEALTHCHECK --interval=1m --timeout=10s \
-  CMD nc -z 127.0.0.1 ${port}  || exit 1
+  CMD nc -z 127.0.0.1 ${PORT}  || exit 1
   
-ENTRYPOINT ["/usr/bin/verysync","-no-browser","-home","/data","-gui-address",":${port}"]
+ENTRYPOINT ["/usr/bin/verysync","-no-browser","-home","/data","-gui-address",":${PORT}"]
 # CMD [""]

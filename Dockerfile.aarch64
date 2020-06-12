@@ -3,11 +3,13 @@ COPY qemu-aarch64-static /usr/bin/
 LABEL maintainer="www.jonnyan404.top:8088"
 ENV TZ=Asia/Shanghai
 WORKDIR /root
+COPY files/verysync-linux-arm64-latest.tar.gz /tmp
 
-RUN apk add --no-cache tzdata curl bash \
-    &&curl http://www.verysync.com/shell/verysync-linux-installer/go-installer.sh > go-installer.sh \
-    && chmod +x go-installer.sh \
-    && ./go-installer.sh
+RUN apk add --no-cache tzdata bash \
+    && tar -xvf /tmp/verysync-linux-arm64-latest.tar.gz -C /tmp \
+    && chmod +x /tmp/verysync-linux-arm64-*/verysync \
+    && mv /tmp/verysync-linux-arm64-*/verysync /usr/bin/ \
+    && rm -rf /tmp
 
-ENTRYPOINT ["/usr/bin/verysync/verysync","-no-browser","-home","/data","-gui-address"]
+ENTRYPOINT ["/usr/bin/verysync","-no-browser","-home","/data","-gui-address"]
 CMD [":8886"]

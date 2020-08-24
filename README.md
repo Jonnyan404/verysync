@@ -3,6 +3,10 @@
 - 官网：http://verysync.com/
 - 论坛：http://forum.verysync.com/forum.php
 - Telegram: https://t.me/verysync
+- QQ群号: 530209771
+
+### 使用问题：QQ群 @亖 | telegram @jonnyan
+
 ---
 
 ## 简单使用
@@ -31,3 +35,8 @@
 
 - /path/you/dir  替换为你自己的目录(可执行创建命令 mkdir -p /path/you/dir)
 - 在web界面指定下载目录为 `/data` 即可下载数据到宿主机的 `/path/you/dir` 目录.
+
+**以 no-root 用户运行**
+
+此步仅限有一定 linux 知识和 docker 知识的用户选择.
+在 docker run 命令后,追加 `--user UID:GID` 来指定运行用户和用户组.

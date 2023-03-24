@@ -2,7 +2,6 @@
 
 - 官网：http://verysync.com/
 - 论坛：http://forum.verysync.com/forum.php
-- Telegram: https://t.me/verysync
 - QQ群号: 530209771
 
 ### 使用问题：QQ群 @亖 

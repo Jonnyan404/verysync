@@ -5,7 +5,7 @@
 - Telegram: https://t.me/verysync
 - QQ群号: 530209771
 
-### 使用问题：QQ群 @亖 | telegram @jonnyan
+### 使用问题：QQ群 @亖 
 
 ---
 
@@ -38,5 +38,5 @@
 
 **以 no-root 用户运行**
 
-此步仅限有一定 linux 知识和 docker 知识的用户选择.
-在 docker run 命令后,追加 `--user UID:GID` 来指定运行用户和用户组.
+从 2.16.x 版本开始,默认以普通用户运行. 
+如需自定义用户,请自行定义变量 `VUID` 的值(此值必须为Linux系统已存在的UID值).

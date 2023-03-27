@@ -7,13 +7,12 @@ if [ ${userid} != 0 ]; then
         exit 404
 fi
 # allow the container to be started with `--user`
-if [ ${VUID} == 0 ]; then
-        chown -R nonverysync /data
-        exec /usr/local/bin/gosu nonverysync /usr/bin/verysync -no-browser -home /data/.config -gui-address :${PORT}
-
-else
+if [ ${VUID} != "" ]; then
         chown -R ${VUID} /data
         exec /usr/local/bin/gosu ${VUID} /usr/bin/verysync -no-browser -home /data/.config -gui-address :${PORT}
+
+else
+        exec /usr/bin/verysync -no-browser -home /data/.config -gui-address :${PORT}
 fi
 
 exec "$@"

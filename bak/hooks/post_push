@@ -1,0 +1,13 @@
+#!/bin/bash
+# Download the manifest-tool
+curl -Lo manifest-tool https://github.com/estesp/manifest-tool/releases/download/v0.9.0/manifest-tool-linux-amd64
+chmod +x manifest-tool
+
+# Push the multi-arch manifest
+./manifest-tool push from-spec multi-arch-manifest.yaml
+
+# On Docker for Mac, see https://github.com/estesp/manifest-tool#sample-usage
+#./manifest-tool --username ada --password lovelace push from-spec multi-arch-manifest.yaml
+#https://hub.docker.com/r/ckulka/multi-arch-example
+#https://www.trion.de/news/2019/10/14/docker-multi-arch-dockerhub.html
+#https://stackoverflow.com/questions/54578066/how-to-build-a-docker-image-on-a-specific-architecture-with-docker-hub

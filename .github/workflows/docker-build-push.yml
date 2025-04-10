@@ -1,0 +1,138 @@
+name: Docker Manual Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: '版本标签 (例如: v1.0.0)'
+        required: true
+        default: 'latest'
+      platforms:
+        description: '构建平台 (用逗号分隔的平台列表)'
+        required: true
+        default: 'linux/amd64,linux/arm64,linux/arm/v7'
+      also_latest:
+        description: '同时推送为latest标签'
+        type: boolean
+        required: true
+        default: true
+      export_images:
+        description: '是否导出镜像添加到 Release'
+        type: boolean
+        required: true
+        default: true
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # 确保获取所有标签
+
+      # - name: Set version variable
+      #   id: set_version
+      #   run: |
+      #     VERSION=${{ github.event.inputs.version }}
+      #     # 如果输入的版本不是以v开头且不是latest，则添加v前缀
+      #     if [[ ! $VERSION == v* && $VERSION != "latest" ]]; then
+      #       VERSION="v$VERSION"
+      #     fi
+      #     echo "VERSION=$VERSION" >> $GITHUB_ENV
+      #     echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ghcr.io/${{ github.repository }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}
+          tags: |
+            # 总是添加输入的版本标签
+            type=raw,value=${{ github.event.inputs.version }}
+            # 只有当选择了also_latest时才添加latest标签
+            type=raw,value=latest,enable=${{ github.event.inputs.also_latest == 'true' }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          platforms: ${{ github.event.inputs.platforms }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            VERSION=${{ github.event.inputs.version }}
+      # 导出各架构镜像
+      - name: 导出各架构镜像
+        if: ${{ github.event.inputs.export_images == 'true' || github.event_name == 'push' }}
+        run: |
+          # 创建导出目录
+          mkdir -p docker-images
+          
+          # 导出 AMD64 镜像（如果包含在平台列表中）
+          if [[ "${{ github.event.inputs.platforms }}" == *"linux/amd64"* ]]; then
+            echo "导出 AMD64 镜像..."
+            docker pull --platform=linux/amd64 ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ github.event.inputs.version }}
+            docker save ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ github.event.inputs.version }} | gzip > docker-images/verysync-${{ github.event.inputs.version }}-amd64.tar.gz
+          fi
+          
+          # 导出 ARM64 镜像（如果包含在平台列表中）
+          if [[ "${{ github.event.inputs.platforms }}" == *"linux/arm64"* ]]; then
+            echo "导出 ARM64 镜像..."
+            docker pull --platform=linux/arm64 ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ github.event.inputs.version }}
+            docker save ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ github.event.inputs.version }} | gzip > docker-images/verysync-${{ github.event.inputs.version }}-arm64.tar.gz
+          fi
+          
+          # 导出 ARM/v7 镜像（如果包含在平台列表中）
+          if [[ "${{ github.event.inputs.platforms }}" == *"linux/arm/v7"* ]]; then
+            echo "导出 ARMv7 镜像..."
+            docker pull --platform=linux/arm/v7 ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ github.event.inputs.version }}
+            docker save ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ github.event.inputs.version }} | gzip > docker-images/verysync-${{ github.event.inputs.version }}-armv7.tar.gz
+          fi
+      
+      - name: 创建 Release
+        id: create_release
+        if: ${{ (github.event.inputs.export_images == 'true' || github.event_name == 'push') && github.ref_type == 'tag' }}
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.event.inputs.version }}
+          name: Release ${{ github.event.inputs.version }}
+          draft: false
+          prerelease: false
+          files: docker-images/*
+          fail_on_unmatched_files: false
+          
+      - name: 上传镜像到工作流程制品
+        if: ${{ (github.event.inputs.export_images == 'true' || github.event_name == 'push') && github.ref_type != 'tag' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: docker-images
+          path: docker-images
+          retention-days: 1

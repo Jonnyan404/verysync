@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: '版本标签 (例如: v1.0.0)'
+        description: '版本标签 (例如: 1.0.0)'
         required: true
         default: '2.20.1'
       platforms:
@@ -100,21 +100,21 @@ jobs:
           if [[ "${{ github.event.inputs.platforms }}" == *"linux/amd64"* ]]; then
             echo "导出 AMD64 镜像..."
             docker pull --platform=linux/amd64 ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ github.event.inputs.version }}
-            docker save ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ github.event.inputs.version }} | gzip > docker-images/verysync-${{ github.event.inputs.version }}-amd64.tar.gz
+            docker save ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ github.event.inputs.version }} | gzip > docker-images/verysync-docker-${{ github.event.inputs.version }}-amd64.tar.gz
           fi
           
           # 导出 ARM64 镜像（如果包含在平台列表中）
           if [[ "${{ github.event.inputs.platforms }}" == *"linux/arm64"* ]]; then
             echo "导出 ARM64 镜像..."
             docker pull --platform=linux/arm64 ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ github.event.inputs.version }}
-            docker save ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ github.event.inputs.version }} | gzip > docker-images/verysync-${{ github.event.inputs.version }}-arm64.tar.gz
+            docker save ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ github.event.inputs.version }} | gzip > docker-images/verysync-docker-${{ github.event.inputs.version }}-arm64.tar.gz
           fi
           
           # 导出 ARM/v7 镜像（如果包含在平台列表中）
           if [[ "${{ github.event.inputs.platforms }}" == *"linux/arm/v7"* ]]; then
             echo "导出 ARMv7 镜像..."
             docker pull --platform=linux/arm/v7 ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ github.event.inputs.version }}
-            docker save ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ github.event.inputs.version }} | gzip > docker-images/verysync-${{ github.event.inputs.version }}-armv7.tar.gz
+            docker save ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ github.event.inputs.version }} | gzip > docker-images/verysync-docker-${{ github.event.inputs.version }}-armv7.tar.gz
           fi
       
           # 列出生成的文件

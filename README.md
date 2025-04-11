@@ -40,7 +40,7 @@
 从 2.16.x 版本开始,
 如需自定义用户,请自行定义变量 `VUID` 的值(此值必须为Linux系统已存在的UID值).
 
-## 离线镜像下载(未启用,目前只是更新文档)
+## 离线镜像下载
 
 在 [Releases](https://github.com/jonnyan404/verysync/releases) 页面可以下载各个架构的离线 Docker 镜像。提供了以下架构的镜像：
 
@@ -55,10 +55,10 @@
 
 ```bash
 # 解压并导入镜像
-gunzip -c verysync-v版本号-架构.tar.gz | docker load
+gunzip -c verysync-docker-*.tar.gz | docker load
 
 # 例如：
-gunzip -c verysync-v2.16.0-amd64.tar.gz | docker load
+gunzip -c verysync-docker-v2.20.1-amd64.tar.gz | docker load
 ```
 
 3. 导入完成后，即可正常使用：
@@ -68,11 +68,5 @@ gunzip -c verysync-v2.16.0-amd64.tar.gz | docker load
 docker images | grep verysync
 
 # 运行容器
-docker run --name verysync -d -p 8886:8886 jonnyan404/verysync:版本号
-```
-
-注意：如果您在完全离线的环境中使用，建议在首次运行时添加 `--network none` 参数，避免程序尝试联网更新：
-
-```bash
-docker run --name verysync --network none -d -p 8886:8886 jonnyan404/verysync:版本号
+docker run --name verysync -d -p 8886:8886 jonnyan404/verysync:v2.20.1
 ```

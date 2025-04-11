@@ -15,7 +15,7 @@ COPY docker-entrypoint.sh /app/
 # 根据平台复制对应的 verysync 文件
 COPY files/verysync-linux-amd64-v${VERSION}.tar.gz /tmp/verysync-amd64.tar.gz
 COPY files/verysync-linux-arm64-v${VERSION}.tar.gz /tmp/verysync-arm64.tar.gz
-COPY files/verysync-linux-arm-${VERSION}.tar.gz /tmp/verysync-arm.tar.gz
+COPY files/verysync-linux-arm-v${VERSION}.tar.gz /tmp/verysync-arm.tar.gz
 
 # 安装依赖并根据平台解压相应的文件
 RUN apk add --no-cache tzdata bash \

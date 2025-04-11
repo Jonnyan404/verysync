@@ -10,7 +10,7 @@
 
 ## 简单使用
 
-`docker run --name verysync  -d -p 3000:3000 -p 22037:22037/udp -p 22027:22027/udp  -p 22330:22330 -p 8886:8886 jonnyan404/verysync`
+`docker run --name verysync  -d -p 8886:8886 jonnyan404/verysync`
 
 - 打开 http://IP:8886 即可访问.
 

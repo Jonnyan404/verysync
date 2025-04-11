@@ -55,7 +55,7 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}
           tags: |
             # 总是添加输入的版本标签
-            type=raw,value=${{ github.event.inputs.version }}
+            type=raw,value=v${{ github.event.inputs.version }}
             # 只有当选择了also_latest时才添加latest标签
             type=raw,value=latest,enable=${{ github.event.inputs.also_latest == 'true' }}
 
@@ -119,20 +119,23 @@ jobs:
       
           # 列出生成的文件
           ls -la docker-images/
-      
-      # 修复 Release 步骤
+
+
       - name: 创建 Release
-        if: ${{ github.event.inputs.export_images == 'true' && github.ref_type == 'tag' }}
-        uses: ncipollo/release-action@v1
+        if: ${{ github.event.inputs.export_images == 'true' }}
+        uses: softprops/action-gh-release@v1 
         with:
-          allowUpdates: true
-          artifacts: "docker-images/*"
+          files: docker-images/*
+          tag_name: v${{ github.event.inputs.version }}
+          name: Release v${{ github.event.inputs.version }}
+          draft: false
+          prerelease: false
           token: ${{ secrets.GITHUB_TOKEN }}
-          name: Release ${{ github.event.inputs.version }}
+          fail_on_unmatched_files: false
           
-      # 修复 Artifact 上传步骤  
+ 
       - name: 上传镜像到工作流程制品
-        if: ${{ github.event.inputs.export_images == 'true' && github.ref_type != 'tag' }}
+        if: ${{ github.event.inputs.export_images == 'true' }}
         uses: actions/upload-artifact@v4
         with:
           name: docker-images

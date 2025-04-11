@@ -4,7 +4,12 @@
 - 论坛：http://forum.verysync.com/forum.php
 - QQ群号: 530209771
 
-### 使用问题：QQ群 @亖 
+# change log
+
+> 2025年04月11日
+
+- 采用 CI 打包镜像
+- 增加 docker 离线镜像
 
 ---
 

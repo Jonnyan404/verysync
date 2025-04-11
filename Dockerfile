@@ -1,4 +1,4 @@
-FROM alpine
+FROM alpine:latest AS builder
 LABEL maintainer="www.mrdoc.fun"
 ENV TZ=Asia/Shanghai \
     PORT=8886 \
@@ -49,6 +49,28 @@ RUN if [ "$TARGETPLATFORM" = "linux/amd64" ]; then \
     && chmod +x /usr/local/bin/gosu \
     && gosu nobody true
 
+
+FROM alpine:latest
+LABEL maintainer="www.mrdoc.fun"
+ENV TZ=Asia/Shanghai \
+    PORT=8886 \
+    VUID=0
+WORKDIR /app
+
+COPY --from=builder /usr/bin/verysync /usr/bin/verysync
+COPY --from=builder /usr/local/bin/gosu /usr/local/bin/gosu
+COPY docker-entrypoint.sh /app/
+
+RUN apk add --no-cache tzdata bash \
+    && mkdir -p /data \
+    && chmod 777 /data \
+    && addgroup -S nonverysync \
+    && adduser -S nonverysync -G nonverysync \
+    && chmod +x /app/docker-entrypoint.sh \
+    && chmod +x /usr/bin/verysync \
+    && chmod +x /usr/local/bin/gosu \
+    && gosu nobody true
+    
 HEALTHCHECK --interval=1m --timeout=10s \
   CMD nc -z 127.0.0.1 ${PORT}  || exit 1
 

@@ -6,7 +6,7 @@ on:
       version:
         description: '版本标签 (例如: v1.0.0)'
         required: true
-        default: 'latest'
+        default: '2.20.1'
       platforms:
         description: '构建平台 (用逗号分隔的平台列表)'
         required: true
@@ -117,22 +117,24 @@ jobs:
             docker save ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ github.event.inputs.version }} | gzip > docker-images/verysync-${{ github.event.inputs.version }}-armv7.tar.gz
           fi
       
+          # 列出生成的文件
+          ls -la docker-images/
+      
+      # 修复 Release 步骤
       - name: 创建 Release
-        id: create_release
-        if: ${{ (github.event.inputs.export_images == 'true' || github.event_name == 'push') && github.ref_type == 'tag' }}
-        uses: softprops/action-gh-release@v1
+        if: ${{ github.event.inputs.export_images == 'true' && github.ref_type == 'tag' }}
+        uses: ncipollo/release-action@v1
         with:
-          tag_name: ${{ github.event.inputs.version }}
+          allowUpdates: true
+          artifacts: "docker-images/*"
+          token: ${{ secrets.GITHUB_TOKEN }}
           name: Release ${{ github.event.inputs.version }}
-          draft: false
-          prerelease: false
-          files: docker-images/*
-          fail_on_unmatched_files: false
           
+      # 修复 Artifact 上传步骤  
       - name: 上传镜像到工作流程制品
-        if: ${{ (github.event.inputs.export_images == 'true' || github.event_name == 'push') && github.ref_type != 'tag' }}
-        uses: actions/upload-artifact@v3
+        if: ${{ github.event.inputs.export_images == 'true' && github.ref_type != 'tag' }}
+        uses: actions/upload-artifact@v4
         with:
           name: docker-images
-          path: docker-images
+          path: docker-images/
           retention-days: 1
